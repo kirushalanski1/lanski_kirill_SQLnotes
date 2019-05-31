@@ -32,10 +32,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void addData(View view){
+        Cursor res = myDb.getAllData();
+        while (res.moveToNext()){
+            if(res.getString(1).equals(editName.getText().toString()) && res.getString(2).equals(editNumber.getText().toString()) && res.getString(3).equals(editAddress.getText().toString())){
+                Toast.makeText(MainActivity.this, "Failed - contact already exists", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+
+        }
+
         boolean nameInserted = myDb.insertContact(editName.getText().toString(), editNumber.getText().toString(), editAddress.getText().toString());
 
         if (nameInserted == true){
-           Toast.makeText(MainActivity.this, "Success - contact inserted", Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, "Success - contact inserted", Toast.LENGTH_LONG).show();
         }
         else{
             Toast.makeText(MainActivity.this, "Failed -  contact not inserted", Toast.LENGTH_LONG).show();
@@ -65,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void searchData(View view) {
+
         Cursor res = myDb.getAllData();
 
         if (res.getCount() == 0) {
@@ -134,7 +145,14 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        if (buffer.toString().isEmpty()) {
+            showMessage("Error", "No matches found");
+            return;
+        }
+
         showMessage("Data", buffer.toString());
+
+
     }
 
     public void showMessage(String title, String message){
